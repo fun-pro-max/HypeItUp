@@ -1,21 +1,23 @@
 document.getElementById('applyForm').addEventListener('submit', (e) => {
     e.preventDefault();
 
+    const fileInput = document.getElementById('resume');
+    
     const appData = {
         name: document.getElementById('name').value,
         email: document.getElementById('email').value,
         role: document.getElementById('role').value,
-        resumeName: document.getElementById('resume').files[0].name
+        resumeFileName: fileInput.files[0] ? fileInput.files[0].name : "resume.pdf"
     };
 
-    // DB now handles the timestamps and initial state
     DB.saveApp(appData);
-    
-    alert('Level 2 Application Recorded. Your status is now TRACKABLE.');
+    alert('Application submitted! Your resume is ready for review.');
     e.target.reset();
 });
 
-// ... [Keep checkStatus logic same as Level 1] ...
+// Update the checkStatus display logic inside handleTrack()
+// Add this line to statusResult.innerHTML inside handleTrack():
+// <span>${app.status === 'ANALYSING' ? '🔍 Your resume is being reviewed' : app.status}</span>
 function handleTrack() {
     const email = document.getElementById('trackEmail').value;
     const resultDiv = document.getElementById('statusResult');
@@ -25,7 +27,7 @@ function handleTrack() {
         resultDiv.innerHTML = `
             <div style="border-left: 4px solid var(--primary); padding: 1rem; background: #f1f5f9;">
                 <h4 style="margin:0">${app.role}</h4>
-                <p style="margin: 0.5rem 0;">Current Status: <span class="badge status-${app.status.toLowerCase()}">${app.status}</span></p>
+                <p style="margin: 0.5rem 0;">Current Status: <span>${app.status === 'ANALYSING' ? '🔍 Your resume is being reviewed' : app.status}</span>
                 <small>Applied on: ${app.appliedAt}</small>
             </div>
         `;

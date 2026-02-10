@@ -2,53 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Recruiter Dashboard - Chaos Resolver L2</title>
+    <title>Recruiter Dashboard</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <nav>
-        <strong>ChaosResolver // Level 2</strong>
+        <strong>ChaosResolver // Recruiter</strong>
         <div>
-            <span style="font-size: 0.8rem; margin-right: 0.5rem;">Acting as:</span>
-            <select id="activeRecruiter" onchange="renderRecruiterTable()" style="margin:0; width: auto; padding: 0.2rem;">
-                <!-- Filled by JS -->
-            </select>
+            Acting as: <select id="activeRecruiter" onchange="render()"></select>
         </div>
     </nav>
-
     <div class="container">
-        <div class="stats-bar" id="loadStats">
-            <!-- Stats items injected here -->
-        </div>
-
-        <div class="card" style="padding: 0;">
-            <div class="recruiter-header">
-                <h3 style="margin:0">Pipeline Management</h3>
-                <select id="roleFilter" onchange="renderRecruiterTable()" style="margin:0; width: 150px; background: white; color: black;">
-                    <option value="All">All Roles</option>
-                    <option value="Frontend">Frontend</option>
-                    <option value="Backend">Backend</option>
-                    <option value="Analyst">Analyst</option>
-                </select>
-            </div>
-
-            <table>
+        <div class="stats-bar" id="loadStats"></div>
+        <div class="card" style="padding:0;">
+            <table id="pipelineTable">
                 <thead>
                     <tr>
-                        <th>Candidate / Time</th>
-                        <th>Owner</th>
+                        <th>Candidate</th>
                         <th>Status</th>
-                        <th>Workflow Action</th>
+                        <th>Owner</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="recruiterTableBody"></tbody>
+                <tbody id="tableBody"></tbody>
             </table>
         </div>
-        <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem;">
-            Single Company Environment: <strong>Acme Corp Internal</strong>
-        </p>
     </div>
-
     <script src="js/storage.js"></script>
     <script src="js/recruiter.js"></script>
 </body>

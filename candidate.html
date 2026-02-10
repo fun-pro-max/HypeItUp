@@ -2,56 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Candidate Portal - Chaos Resolver</title>
+    <title>Candidate Portal</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <nav>
-        <a href="index.html" style="text-decoration:none; color:inherit;"><strong>ChaosResolver</strong></a>
-        <small>Candidate Access</small>
-    </nav>
-
+    <nav><strong>ChaosResolver // Candidate</strong> <a href="index.html">Home</a></nav>
     <div class="container">
         <div class="card">
-            <h2>Apply for a Role</h2>
+            <h2>Submit Application</h2>
             <form id="applyForm">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div>
-                        <label>Full Name</label>
-                        <input type="text" id="name" required placeholder="Alex Rivera">
-                    </div>
-                    <div>
-                        <label>Email Address</label>
-                        <input type="email" id="email" required placeholder="alex@example.com">
-                    </div>
-                </div>
-                
-                <label>Target Role</label>
-                <select id="role">
+                <input type="text" id="name" placeholder="Full Name" required style="width:100%; padding:0.8rem; margin-bottom:1rem;">
+                <input type="email" id="email" placeholder="Email" required style="width:100%; padding:0.8rem; margin-bottom:1rem;">
+                <select id="role" style="width:100%; padding:0.8rem; margin-bottom:1rem;">
                     <option value="Frontend">Frontend Engineer</option>
                     <option value="Backend">Backend Engineer</option>
-                    <option value="Analyst">Product Analyst</option>
                 </select>
-
                 <label>Resume (PDF)</label>
-                <input type="file" id="resume" accept=".pdf" required>
-
-                <button type="submit" class="btn-primary">Submit Application</button>
+                <input type="file" id="resume" accept=".pdf" required style="margin-bottom:1rem;">
+                <button type="submit" class="btn-primary" style="width:100%;">Apply Now</button>
             </form>
         </div>
 
         <div class="card">
-            <h2>Track Application</h2>
-            <p>Enter your email to see your current status.</p>
-            <div style="display: flex; gap: 0.5rem;">
-                <input type="email" id="trackEmail" placeholder="Enter your email..." style="margin-bottom:0;">
-                <button onclick="handleTrack()" class="btn-outline">Track</button>
-            </div>
-            <div id="statusResult" style="margin-top: 1.5rem;"></div>
+            <h2>Track Status</h2>
+            <input type="email" id="trackEmail" placeholder="Enter your email" style="width:70%; padding:0.8rem;">
+            <button onclick="handleTrack()" class="btn-outline">Check</button>
+            <div id="statusResult" style="margin-top:1.5rem;"></div>
         </div>
     </div>
-
     <script src="js/storage.js"></script>
-    <script src="js/candidate.js"></script>
+    <script>
+        document.getElementById('applyForm').onsubmit = (e) => {
+            e.preventDefault();
+            DB.saveApp({
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                role: document.getElementById('role').value,
+                resumeName: document.getElementById('resume').files[0].name
+            });
+            alert('Applied successfully!');
+            e.target.reset();
+        };
+
+        function handleTrack() {
+            const app = DB.findByEmail(document.getElementById('trackEmail').value);
+            const res = document.getElementById('statusResult');
+            if(!app) return res.innerHTML = "No application found.";
+            
+            let statusText = app.status;
+            if(app.status === 'ANALYSING') statusText = "🔍 Your resume is being reviewed";
+            
+            res.innerHTML = `<div class="badge status-${app.status.toLowerCase()}">${statusText}</div>`;
+        }
+    </script>
 </body>
 </html>
