@@ -1,59 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Candidate Portal</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
+<html>
+<head><title>Apply</title><link rel="stylesheet" href="css/style.css"></head>
 <body>
-    <nav><strong>ChaosResolver // Candidate</strong> <a href="index.html">Home</a></nav>
+    <nav><strong>ChaosResolver // Apply</strong> <a href="index.html">Home</a></nav>
     <div class="container">
         <div class="card">
-            <h2>Submit Application</h2>
             <form id="applyForm">
-                <input type="text" id="name" placeholder="Full Name" required style="width:100%; padding:0.8rem; margin-bottom:1rem;">
-                <input type="email" id="email" placeholder="Email" required style="width:100%; padding:0.8rem; margin-bottom:1rem;">
-                <select id="role" style="width:100%; padding:0.8rem; margin-bottom:1rem;">
-                    <option value="Frontend">Frontend Engineer</option>
-                    <option value="Backend">Backend Engineer</option>
+                <input type="text" id="name" placeholder="Full Name" required style="width:100%; padding:10px; margin-bottom:15px;">
+                <select id="role" style="width:100%; padding:10px; margin-bottom:15px;">
+                    <option>Frontend Engineer</option>
+                    <option>Backend Engineer</option>
                 </select>
-                <label>Resume (PDF)</label>
-                <input type="file" id="resume" accept=".pdf" required style="margin-bottom:1rem;">
-                <button type="submit" class="btn-primary" style="width:100%;">Apply Now</button>
+                <input type="file" id="resume" accept=".pdf,.docx" required style="margin-bottom:15px;">
+                <button type="submit" class="btn-primary" style="width:100%">Submit Application</button>
             </form>
         </div>
-
-        <div class="card">
-            <h2>Track Status</h2>
-            <input type="email" id="trackEmail" placeholder="Enter your email" style="width:70%; padding:0.8rem;">
-            <button onclick="handleTrack()" class="btn-outline">Check</button>
-            <div id="statusResult" style="margin-top:1.5rem;"></div>
-        </div>
     </div>
-    <script src="js/storage.js"></script>
+    <script src="js/core.js"></script>
     <script>
         document.getElementById('applyForm').onsubmit = (e) => {
             e.preventDefault();
-            DB.saveApp({
+            DB.addApp({
                 name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
                 role: document.getElementById('role').value,
                 resumeName: document.getElementById('resume').files[0].name
             });
-            alert('Applied successfully!');
-            e.target.reset();
+            alert('Application submitted!');
+            window.location.href = 'index.html';
         };
-
-        function handleTrack() {
-            const app = DB.findByEmail(document.getElementById('trackEmail').value);
-            const res = document.getElementById('statusResult');
-            if(!app) return res.innerHTML = "No application found.";
-            
-            let statusText = app.status;
-            if(app.status === 'ANALYSING') statusText = "🔍 Your resume is being reviewed";
-            
-            res.innerHTML = `<div class="badge status-${app.status.toLowerCase()}">${statusText}</div>`;
-        }
     </script>
 </body>
 </html>

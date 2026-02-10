@@ -1,83 +1,72 @@
-const select = document.getElementById('activeRecruiter');
-RECRUITERS.forEach(r => {
-    const opt = document.createElement('option');
-    opt.value = opt.textContent = r;
-    select.appendChild(opt);
-});
+(function() {
+    const currentUser = sessionStorage.getItem('active_recruiter');
+    const tableBody = document.getElementById('appTableBody');
+    const statsDisplay = document.getElementById('statsDisplay');
 
-function calculateHours(iso) {
-    if (!iso) return 0;
-    return Math.floor((new Date() - new Date(iso)) / (1000 * 60 * 60));
-}
+    if (!currentUser) {
+        window.location.href = 'recruiter-login.html';
+        return;
+    }
 
-function render() {
-    const tbody = document.getElementById('tableBody');
-    const apps = DB.getApps();
-    const actor = select.value;
+    document.getElementById('userBadge').textContent = "👤 " + currentUser;
 
-    // Load Stats
-    const stats = document.getElementById('loadStats');
-    stats.innerHTML = RECRUITERS.map(r => {
-        const count = apps.filter(a => a.owner === r && a.status === 'ANALYSING').length;
-        return `<div class="stat-item"><span class="stat-value">${count}</span><span class="time-meta">${r.split(' ')[0]}</span></div>`;
-    }).join('');
-
-    tbody.innerHTML = '';
-    apps.forEach(app => {
-        const hrsApplied = calculateHours(app.timestamps.applied);
-        const hrsAnalysed = calculateHours(app.timestamps.analysed);
+    window.renderDashboard = function() {
+        const apps = DB.getApps();
         
-        let stale = "";
-        if(app.status === 'APPLIED' && hrsApplied > 24) stale = '<span class="stale-tag">⚠️ UNCLAIMED > 24H</span>';
-        if(app.status === 'ANALYSING' && hrsAnalysed > 48) stale = '<span class="stale-tag">⚠️ STUCK > 48H</span>';
+        // 1. Stats
+        statsDisplay.innerHTML = RECRUITERS.map(r => {
+            const load = apps.filter(a => a.owner === r.name && a.status === 'ANALYSING').length;
+            return `<div class="stat-item"><span class="stat-val">${load}</span><small>${r.name.split(' ')[0]}</small></div>`;
+        }).join('');
 
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>
-                <strong>${app.name}</strong> ${stale}
-                <span class="time-meta">${app.role} | Applied ${hrsApplied}h ago</span>
-            </td>
-            <td><span class="badge status-${app.status.toLowerCase()}">${app.status}</span></td>
-            <td>${app.owner || '--'}</td>
-            <td>${getActions(app, actor)}</td>
-        `;
-        tbody.appendChild(row);
-    });
-}
+        // 2. Table
+        tableBody.innerHTML = '';
+        if (apps.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:3rem; color:#64748b;">No candidates found.</td></tr>';
+            return;
+        }
 
-function getActions(app, actor) {
-    if (app.status === 'APPLIED') {
-        return `<button class="btn-primary" onclick="viewResume(${app.id}, '${app.resumeName}')">View Resume</button>`;
-    }
-    if (app.status === 'ANALYSING') {
-        if (app.owner !== actor) return `<small>Owned by ${app.owner}</small>`;
-        return `
-            <button class="btn-success" onclick="DB.decideApp(${app.id}, 'HIRED', '${actor}'); render();">Hire</button>
-            <button class="btn-danger" onclick="DB.decideApp(${app.id}, 'REJECTED', '${actor}'); render();">Reject</button>
-            <br><small style="cursor:pointer;color:blue" onclick="viewResume(${app.id}, '${app.resumeName}')">Re-view</small>
-        `;
-    }
-    return `<span class="time-meta">Closed by ${app.owner}</span>`;
-}
+        apps.forEach(app => {
+            const isAnalysing = (app.status === 'ANALYSING');
+            const isOwner = (app.owner === currentUser);
+            const isFinal = (app.status === 'HIRED' || app.status === 'REJECTED');
 
-function viewResume(id, fileName) {
-    const actor = select.value;
-    const apps = DB.getApps();
-    const app = apps.find(a => a.id === id);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <strong>${app.name}</strong><br>
+                    <small style="color:#64748b">${app.role} | ${app.resumeName}</small>
+                </td>
+                <td><span class="badge status-${app.status.toLowerCase()}">${app.status}</span></td>
+                <td><small>${app.owner || '--'}</small></td>
+                <td>
+                    ${!isFinal ? `
+                        <button class="btn-outline" onclick="handleView(${app.id})">View Resume</button>
+                        <button class="btn-primary" style="background:#16a34a" ${(!isAnalysing || !isOwner) ? 'disabled' : ''} onclick="handleUpdate(${app.id}, 'HIRED')">Hire</button>
+                        <button class="btn-primary" style="background:#dc2626" ${(!isAnalysing || !isOwner) ? 'disabled' : ''} onclick="handleUpdate(${app.id}, 'REJECTED')">Reject</button>
+                    ` : '<small>Workflow Complete</small>'}
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    };
 
-    if (app.status === 'APPLIED') {
-        DB.startAnalysis(id, actor);
-    }
+    window.handleView = function(id) {
+        const app = DB.getApps().find(a => a.id === id);
+        if (app.status === 'APPLIED') {
+            DB.claimAndReview(id, currentUser);
+        }
+        
+        const win = window.open('', '_blank');
+        win.document.write('<h1>Resume Viewer</h1><p>Candidate: ' + app.name + '</p><hr><button onclick="window.close()">Back</button>');
+        win.document.close();
+        renderDashboard();
+    };
 
-    const win = window.open('', '_blank');
-    win.document.write(`<html><body style="font-family:sans-serif;text-align:center;padding:50px;">
-        <h1>📄 Resume: ${fileName}</h1>
-        <p>Candidate: ${app.name}</p>
-        <div style="border:2px dashed #ccc; height:300px; display:flex; align-items:center; justify-content:center;">[ Resume Content ]</div>
-        <button onclick="window.close()">Back to Dashboard</button>
-    </body></html>`);
-    
-    render();
-}
+    window.handleUpdate = function(id, status) {
+        DB.updateStatus(id, status);
+        renderDashboard();
+    };
 
-window.onload = render;
+    renderDashboard();
+})();

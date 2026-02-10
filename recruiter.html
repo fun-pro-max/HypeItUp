@@ -2,20 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Recruiter Dashboard</title>
+    <title>Dashboard | ChaosResolver</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <nav>
-        <strong>ChaosResolver // Recruiter</strong>
-        <div>
-            Acting as: <select id="activeRecruiter" onchange="render()"></select>
-        </div>
+        <strong>ChaosResolver // Dashboard</strong>
+        <span id="userBadge" style="font-weight: bold; color: var(--primary);"></span>
     </nav>
+
     <div class="container">
-        <div class="stats-bar" id="loadStats"></div>
-        <div class="card" style="padding:0;">
-            <table id="pipelineTable">
+        <div class="stats-bar" id="statsDisplay"></div>
+        <div class="card">
+            <table>
                 <thead>
                     <tr>
                         <th>Candidate</th>
@@ -24,11 +23,13 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="tableBody"></tbody>
+                <tbody id="appTableBody"></tbody>
             </table>
         </div>
     </div>
-    <script src="js/storage.js"></script>
+
+    <!-- Separation for Parsing Safety -->
+    <script src="js/core.js"></script>
     <script src="js/recruiter.js"></script>
 </body>
 </html>
