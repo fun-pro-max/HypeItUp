@@ -8,11 +8,14 @@ document.getElementById('applyForm').addEventListener('submit', (e) => {
         resumeName: document.getElementById('resume').files[0].name
     };
 
+    // DB now handles the timestamps and initial state
     DB.saveApp(appData);
-    alert('Application submitted! Use your email to track status.');
+    
+    alert('Level 2 Application Recorded. Your status is now TRACKABLE.');
     e.target.reset();
 });
 
+// ... [Keep checkStatus logic same as Level 1] ...
 function handleTrack() {
     const email = document.getElementById('trackEmail').value;
     const resultDiv = document.getElementById('statusResult');

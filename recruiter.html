@@ -2,44 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Recruiter Dashboard - Chaos Resolver</title>
+    <title>Recruiter Dashboard - Chaos Resolver L2</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <nav>
-        <a href="index.html" style="text-decoration:none; color:inherit;"><strong>ChaosResolver</strong></a>
-        <a href="index.html" class="btn-outline" style="font-size: 0.8rem;">Logout</a>
+        <strong>ChaosResolver // Level 2</strong>
+        <div>
+            <span style="font-size: 0.8rem; margin-right: 0.5rem;">Acting as:</span>
+            <select id="activeRecruiter" onchange="renderRecruiterTable()" style="margin:0; width: auto; padding: 0.2rem;">
+                <!-- Filled by JS -->
+            </select>
+        </div>
     </nav>
 
     <div class="container">
-        <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h2>Candidate Pipeline</h2>
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <label style="margin:0">Filter:</label>
-                    <select id="roleFilter" style="margin:0; width: 150px;" onchange="renderRecruiterTable()">
-                        <option value="All">All Roles</option>
-                        <option value="Frontend">Frontend</option>
-                        <option value="Backend">Backend</option>
-                        <option value="Analyst">Analyst</option>
-                    </select>
-                </div>
+        <div class="stats-bar" id="loadStats">
+            <!-- Stats items injected here -->
+        </div>
+
+        <div class="card" style="padding: 0;">
+            <div class="recruiter-header">
+                <h3 style="margin:0">Pipeline Management</h3>
+                <select id="roleFilter" onchange="renderRecruiterTable()" style="margin:0; width: 150px; background: white; color: black;">
+                    <option value="All">All Roles</option>
+                    <option value="Frontend">Frontend</option>
+                    <option value="Backend">Backend</option>
+                    <option value="Analyst">Analyst</option>
+                </select>
             </div>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Candidate</th>
-                        <th>Role</th>
+                        <th>Candidate / Time</th>
+                        <th>Owner</th>
                         <th>Status</th>
-                        <th>Actions</th>
+                        <th>Workflow Action</th>
                     </tr>
                 </thead>
-                <tbody id="recruiterTableBody">
-                    <!-- Loaded via JS -->
-                </tbody>
+                <tbody id="recruiterTableBody"></tbody>
             </table>
         </div>
+        <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem;">
+            Single Company Environment: <strong>Acme Corp Internal</strong>
+        </p>
     </div>
 
     <script src="js/storage.js"></script>

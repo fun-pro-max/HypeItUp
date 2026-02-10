@@ -1,35 +1,61 @@
-const DB_KEY = 'hiring_chaos_apps';
+const DB_KEY = 'hiring_chaos_apps_v2';
+
+// Predefined Recruiters for Level 2
+const RECRUITERS = ["Sarah Jenkins", "Mark Anthony", "Jenny Wu"];
 
 const DB = {
-    // Get all applications
-    getApps: () => {
-        return JSON.parse(localStorage.getItem(DB_KEY) || '[]');
-    },
-
-    // Save a new application
+    getApps: () => JSON.parse(localStorage.getItem(DB_KEY) || '[]'),
+    
     saveApp: (appData) => {
         const apps = DB.getApps();
         const newApp = {
             id: Date.now(),
             ...appData,
-            status: 'Pending',
-            appliedAt: new Date().toLocaleDateString()
+            status: 'APPLIED',
+            owner: null,
+            timestamps: {
+                applied: new Date().toISOString(),
+                reviewed: null,
+                decided: null
+            },
+            history: [{ status: 'APPLIED', at: new Date().toISOString(), actor: 'System' }]
         };
         apps.push(newApp);
         localStorage.setItem(DB_KEY, JSON.stringify(apps));
-        return newApp;
     },
 
-    // Update status of existing app
-    updateStatus: (id, newStatus) => {
-        const apps = DB.getApps().map(app => 
-            app.id === parseInt(id) ? { ...app, status: newStatus } : app
-        );
+    // Claim: Move from APPLIED -> UNDER_REVIEW
+    claimApp: (id, recruiterName) => {
+        const apps = DB.getApps().map(app => {
+            if (app.id === parseInt(id)) {
+                return {
+                    ...app,
+                    status: 'UNDER_REVIEW',
+                    owner: recruiterName,
+                    timestamps: { ...app.timestamps, reviewed: new Date().toISOString() },
+                    history: [...app.history, { status: 'UNDER_REVIEW', at: new Date().toISOString(), actor: recruiterName }]
+                };
+            }
+            return app;
+        });
         localStorage.setItem(DB_KEY, JSON.stringify(apps));
     },
 
-    // Find app by email
-    findByEmail: (email) => {
-        return DB.getApps().find(app => app.email.toLowerCase() === email.toLowerCase());
-    }
+    // Decide: Move from UNDER_REVIEW -> HIRED/REJECTED
+    decideApp: (id, status, recruiterName) => {
+        const apps = DB.getApps().map(app => {
+            if (app.id === parseInt(id)) {
+                return {
+                    ...app,
+                    status: status,
+                    timestamps: { ...app.timestamps, decided: new Date().toISOString() },
+                    history: [...app.history, { status: status, at: new Date().toISOString(), actor: recruiterName }]
+                };
+            }
+            return app;
+        });
+        localStorage.setItem(DB_KEY, JSON.stringify(apps));
+    },
+
+    findByEmail: (email) => DB.getApps().find(app => app.email.toLowerCase() === email.toLowerCase())
 };
