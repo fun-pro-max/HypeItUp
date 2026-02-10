@@ -4,11 +4,28 @@
 <body>
     <div class="container" style="text-align: center; margin-top: 15vh;">
         <h1>🌪️ Hiring Chaos Resolver</h1>
-        <p>A Level 2.5 Workflow System</p>
-        <div style="margin-top: 3rem; display: flex; gap: 1rem; justify-content: center;">
-            <a href="candidate.html"><button class="btn-primary" style="padding: 1.5rem;">Candidate Portal</button></a>
-            <a href="recruiter-login.html"><button class="btn-outline" style="padding: 1.5rem;">Recruiter Login</button></a>
+        <div class="card" style="max-width: 400px; margin: 0 auto;">
+            <label>Select Company Portal:</label>
+            <select id="companyPicker" style="width: 100%; padding: 1rem; margin-bottom: 2rem; border-radius: 8px; border:1px solid #ddd;"></select>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <button class="btn-primary" onclick="enter('candidate')">Candidate Entry</button>
+                <button class="btn-outline" onclick="enter('recruiter')">Recruiter Entry</button>
+            </div>
         </div>
     </div>
+    <script src="js/core.js"></script>
+    <script>
+        const picker = document.getElementById('companyPicker');
+        COMPANIES.forEach(c => {
+            picker.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+        });
+        function enter(role) {
+            const id = picker.value;
+            const name = COMPANIES.find(c => c.id === id).name;
+            sessionStorage.setItem('selected_company_id', id);
+            sessionStorage.setItem('selected_company_name', name);
+            window.location.href = role === 'candidate' ? 'candidate.html' : 'recruiter-login.html';
+        }
+    </script>
 </body>
 </html>

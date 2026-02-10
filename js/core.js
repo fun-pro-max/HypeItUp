@@ -1,9 +1,14 @@
-const DB_KEY = 'hiring_chaos_v2.5_stable';
+const DB_KEY = 'hiring_chaos_v3_multi';
+
+const COMPANIES = [
+    { id: 'tech-vision', name: 'TechVision Inc' },
+    { id: 'green-energy', name: 'GreenEnergy Co' }
+];
 
 const RECRUITERS = [
-    { name: "Sarah Jenkins", initial: "SJ", role: "Technical Lead" },
-    { name: "Mark Anthony", initial: "MA", role: "HR Manager" },
-    { name: "Jenny Wu", initial: "JW", role: "Talent Director" }
+    { companyId: 'tech-vision', name: "Sarah Jenkins", initial: "SJ", role: "Tech Lead" },
+    { companyId: 'tech-vision', name: "Mark Anthony", initial: "MA", role: "HR Manager" },
+    { companyId: 'green-energy', name: "Jenny Wu", initial: "JW", role: "Director" }
 ];
 
 const DB = {
@@ -11,31 +16,37 @@ const DB = {
     
     saveApps: (apps) => localStorage.setItem(DB_KEY, JSON.stringify(apps)),
     
-    addApp: (app) => {
+    getCompanyApps: (companyId) => {
+        return DB.getApps().filter(app => app.companyId === companyId);
+    },
+    
+    addApp: (appData) => {
         const apps = DB.getApps();
+        const activeCompanyId = sessionStorage.getItem('selected_company_id');
+        
         apps.push({
             id: Date.now(),
-            ...app,
+            companyId: activeCompanyId,
+            name: appData.name,
+            role: appData.role,
             status: 'APPLIED',
             owner: null,
-            viewed: false,
+            resumeName: appData.resumeName,
+            resumeUrl: `resumes/${appData.resumeName}`, // Path to static folder
             timestamp: new Date().toISOString()
         });
         DB.saveApps(apps);
     },
 
-    claimAndReview: (id, recruiterName) => {
+    updateStatus: (id, status, owner = null) => {
         const apps = DB.getApps().map(a => {
             if (a.id === id) {
-                return { ...a, status: 'ANALYSING', owner: recruiterName, viewed: true };
+                const update = { ...a, status };
+                if (owner) update.owner = owner;
+                return update;
             }
             return a;
         });
-        DB.saveApps(apps);
-    },
-
-    updateStatus: (id, status) => {
-        const apps = DB.getApps().map(a => a.id === id ? { ...a, status } : a);
         DB.saveApps(apps);
     }
 };

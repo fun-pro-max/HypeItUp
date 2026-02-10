@@ -2,30 +2,35 @@
 <html>
 <head><title>Apply</title><link rel="stylesheet" href="css/style.css"></head>
 <body>
-    <nav><strong>ChaosResolver // Apply</strong> <a href="index.html">Home</a></nav>
+    <nav><strong>Applying to: <span id="coName"></span></strong> <a href="index.html">Change</a></nav>
     <div class="container">
         <div class="card">
-            <form id="applyForm">
-                <input type="text" id="name" placeholder="Full Name" required style="width:100%; padding:10px; margin-bottom:15px;">
-                <select id="role" style="width:100%; padding:10px; margin-bottom:15px;">
+            <form id="appForm">
+                <input type="text" id="name" placeholder="Full Name" required style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #ddd; border-radius:5px;">
+                <select id="role" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #ddd; border-radius:5px;">
                     <option>Frontend Engineer</option>
                     <option>Backend Engineer</option>
                 </select>
-                <input type="file" id="resume" accept=".pdf,.docx" required style="margin-bottom:15px;">
+                <label>Upload Resume (Must exist in /resumes folder)</label>
+                <input type="file" id="resume" accept=".pdf,.docx" required style="margin: 15px 0;">
                 <button type="submit" class="btn-primary" style="width:100%">Submit Application</button>
             </form>
         </div>
     </div>
     <script src="js/core.js"></script>
     <script>
-        document.getElementById('applyForm').onsubmit = (e) => {
+        const co = sessionStorage.getItem('selected_company_name');
+        if (!co) window.location.href = 'index.html';
+        document.getElementById('coName').textContent = co;
+
+        document.getElementById('appForm').onsubmit = (e) => {
             e.preventDefault();
             DB.addApp({
                 name: document.getElementById('name').value,
                 role: document.getElementById('role').value,
                 resumeName: document.getElementById('resume').files[0].name
             });
-            alert('Application submitted!');
+            alert('Application sent!');
             window.location.href = 'index.html';
         };
     </script>

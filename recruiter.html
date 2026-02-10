@@ -1,34 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard | ChaosResolver</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
+<html>
+<head><title>Dashboard</title><link rel="stylesheet" href="css/style.css"></head>
 <body>
-    <nav>
-        <strong>ChaosResolver // Dashboard</strong>
-        <span id="userBadge" style="font-weight: bold; color: var(--primary);"></span>
-    </nav>
-
+    <nav><strong id="navCo"></strong> <span id="userBadge" style="color:var(--primary); font-weight:bold;"></span></nav>
     <div class="container">
         <div class="stats-bar" id="statsDisplay"></div>
-        <div class="card">
+        <div class="card" style="padding:0; overflow:hidden;">
             <table>
                 <thead>
-                    <tr>
-                        <th>Candidate</th>
-                        <th>Status</th>
-                        <th>Owner</th>
-                        <th>Actions</th>
-                    </tr>
+                    <tr><th>Candidate</th><th>Status</th><th>Owner</th><th>Actions</th></tr>
                 </thead>
                 <tbody id="appTableBody"></tbody>
             </table>
         </div>
     </div>
-
-    <!-- Separation for Parsing Safety -->
     <script src="js/core.js"></script>
     <script src="js/recruiter.js"></script>
 </body>

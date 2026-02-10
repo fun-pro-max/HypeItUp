@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html>
-<head><title>Verify Identity</title><link rel="stylesheet" href="css/style.css"></head>
+<head><title>Recruiter Identity</title><link rel="stylesheet" href="css/style.css"></head>
 <body>
-    <div class="container" style="text-align:center;">
-        <h2>Verify Recruiter Identity</h2>
+    <div class="container" style="text-align: center;">
+        <h2 id="coHeader"></h2>
         <div class="profile-grid" id="loginGrid"></div>
     </div>
     <script src="js/core.js"></script>
     <script>
+        const id = sessionStorage.getItem('selected_company_id');
+        const name = sessionStorage.getItem('selected_company_name');
+        if (!id) window.location.href = 'index.html';
+        document.getElementById('coHeader').textContent = name + " Recruiters";
+
         const grid = document.getElementById('loginGrid');
-        RECRUITERS.forEach(r => {
+        RECRUITERS.filter(r => r.companyId === id).forEach(r => {
             const div = document.createElement('div');
             div.className = 'profile-card';
             div.innerHTML = `<div class="avatar">${r.initial}</div><strong>${r.name}</strong><br><small>${r.role}</small>`;

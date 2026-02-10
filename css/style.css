@@ -12,14 +12,15 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 nav { background: white; padding: 1rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
 
+.card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border); }
+
 /* Dashboard UI */
 .stats-bar { display: flex; gap: 2rem; margin-bottom: 2rem; background: #eef2ff; padding: 1.2rem; border-radius: 12px; border: 1px solid #dbeafe; }
 .stat-item { display: flex; flex-direction: column; }
 .stat-val { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
 
-.card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border); overflow: hidden; }
 table { width: 100%; border-collapse: collapse; }
-th { text-align: left; padding: 1rem; background: #f9fafb; font-size: 0.75rem; color: #64748b; text-transform: uppercase; }
+th { text-align: left; padding: 1rem; background: #f9fafb; font-size: 0.75rem; color: #64748b; text-transform: uppercase; border-bottom: 2px solid var(--border); }
 td { padding: 1rem; border-bottom: 1px solid var(--border); }
 
 /* Badges */
@@ -35,7 +36,7 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 .btn-primary { background: var(--primary); color: white; }
 .btn-outline { background: white; border: 1px solid var(--border); }
 
-/* Login Profiles */
+/* Grid */
 .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
 .profile-card { background: white; padding: 2rem; border-radius: 12px; text-align: center; cursor: pointer; border: 2px solid transparent; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
 .profile-card:hover { border-color: var(--primary); }
