@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recruiter Dashboard - Chaos Resolver</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="index.html" style="text-decoration:none; color:inherit;"><strong>ChaosResolver</strong></a>
+        <a href="index.html" class="btn-outline" style="font-size: 0.8rem;">Logout</a>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2>Candidate Pipeline</h2>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <label style="margin:0">Filter:</label>
+                    <select id="roleFilter" style="margin:0; width: 150px;" onchange="renderRecruiterTable()">
+                        <option value="All">All Roles</option>
+                        <option value="Frontend">Frontend</option>
+                        <option value="Backend">Backend</option>
+                        <option value="Analyst">Analyst</option>
+                    </select>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Candidate</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="recruiterTableBody">
+                    <!-- Loaded via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/recruiter.js"></script>
+</body>
+</html>
